@@ -7,7 +7,7 @@
 		<title>reveal.js</title>
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+		<link rel="stylesheet" href="css/theme/x-theme.css">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -24,8 +24,208 @@
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<section data-background="#f54e45">
+					<img width="100px" class="plain" src="images/x-team-logo.svg" />
+					<h1>Docker Compose</h1>
+					<p>Drupal Development Environments with Docker Compose</p>
+				</section>
+				<section>
+					<h1>Me</h1>
+					<ul>
+						<li>mccrodp on d.org</li>
+						<li>Work for X-Team</li>
+						<li>Pantheon.io; Website Management Tools</li>
+						<li>Programs: Unleash; Dojo, etc.</li>
+						<li>Want a job? - msg me</li>
+					</ul>
+					<aside class="notes">
+						<ul>
+							<li>Me - Drupal Dev since ~D6 (2008) - mccrodp on d.org</li>
+							<li>100% remote dev company (Symfony, Laravel, React, etc)</li>
+							<li>My work: Drupal 7 - Pantheon.io; marketing site</li>
+							<li>Unleash; upskilling and community work weekly, Dojo: mentoring</li>
+							<li>A job that allows you to travel</li>
+						</ul>
+					</aside>
+				</section>
+				<section>
+					<h1>What is this talk about?</h1>
+					<ul>
+						<li>How? complex dev environments...</li>
+						<li>What? Vagrant; Puppet, Chef, Ansible...etc.</li>
+						<li>Confused! I’m not an admin...</li>
+						<li>Boring! Waste of time.</li>
+						<li>Enter Docker :)</li>
+					</ul>
+					<aside class="notes">
+						<ul>
+							<li>Boring! I just need to develop this website / software!</li>
+						</ul>
+					</aside>
+				</section>
+				<section data-background="#f54e45" data-background-transition="zoom">
+					<h1>What is Docker?</h1>
+					<ul>
+						<blockquote>An open platform for distributed applications for developers and sysadmins</blockquote>
+						<li>Agility</li>
+						<li>Control</li>
+						<li>Portability</li>
+					</ul>
+					<aside class="notes">
+						<ul>
+							<li>Accurately define environments</li>
+							<li>Developers own all code (incl. OS-kinda)</li>
+							<li>Deploy full docker container, e.g. to AWS</li>
+							<li>What are Docker containers?</li>
+						</ul>
+					</aside>
+				</section>
+				<section>
+					<img width="100%" src="images/docker-containers-sharing.png" />
+				</section>
+				<section>
+					<h1>Containers v.s. VMs</h1>
+					<img style="width: 45%; float: left;" src="images/what-is-docker-diagram.png" />
+					<img style="width: 45%; float: right; margin-top: 183px;" src="images/what-is-vm-diagram.png" />
+				</section>
+				<section style="text-align: left;">
+					<h1>Benefits of Docker!</h1>
+					<h2>Dev</h2>
+					<ul>
+						<li>Accelerate</li>
+						<li>Eliminate</li>
+						<li>Collaborate</li>
+					</ul>
+					<h2>Deploy</h2>
+					<ul>
+						<li>Ship Frequently</li>
+						<li>Scale easily</li>
+					</ul>
+					<aside class="notes">
+						<ul>
+							<li>Accelerate Developer Onboarding</li>
+							<li>Eliminate Environment Inconsistencies</li>
+							<li>Easily Share and Collaborate</li>
+						</ul>
+					</aside>
+				</section>
+				<section>
+					<h1>Docker in the Cloud</h1>
+					<img src="images/docker-in-the-cloud.png" />
+				</section>
+				<section>
+					<h1>Getting started</h1>
+					<ul>
+						<li>Mac / Win users: install <strong>Docker Toolbox</strong> ;
+							<ul>
+								<li>boot2docker</li>
+								<li>CLI client & Docker Machine</li>
+								<li>Docker Compose: <code style="color: #f54e45">docker-compose</code></li>
+								<li>Kitematic (GUI) & Docker QuickStart shell</li>
+							</ul>
+						</li>
+						<li>DockerHub</li>
+						<li><a href="https://hub.docker.com/_/drupal/">Demo!</a></li>
+					</ul>
+					<aside class="notes">
+						<ul>
+							<li>VM through Oracle’s VirtualBox</li>
+							<li>Kitematic, the Docker GUI & Docker QuickStart shell</li>
+							<li>Concept: Images v.s. Containers ≈ Classes v.s. Objects</li>
+							<li>DockerHub => docker image repo</li>
+						</ul>
+					</aside>
+				</section>
+				<section  style="text-align: left;">
+					<h1>But... my DB server?</h1>
+					<h2>Options</h2>
+					<ul>
+						<li>Use mySQLite?</li>
+						<li>or a linked container?</li>
+					</ul>
+					<h2>Is this good enough?</h2>
+					<ul>
+						<li>Extra management</li>
+						<li>More commands</li>
+					</ul>
+				</section>
+				<section data-background="#f54e45" data-background-transition="zoom">
+					<h1>Solution: Docker Compose</h1>
+					<blockquote>“a tool for defining and running multi-container Docker applications”</blockquote>
+						<li>Compose file <em style="color: #1d3240">docker-compose.yml</em></li>
+						<li>Wrapper CLI <code style="color: #1d3240">docker-compose</code></li>
+				</section>
+				<section>
+					<h1>Docker Compose file</h1>
+					<div>A <em style="color: #f54e45">docker-compose.yml</em> looks like this:</div>
+					<pre>
+						<code class="hljs" data-trim>
+version: '2'
+services:
+  web:
+	build: .
+	ports:
+	- "5000:5000"
+	volumes:
+	- .:/code
+	- logvolume01:/var/log
+	links:
+	- redis
+  redis:
+	image: redis
+volumes:
+  logvolume01: {}
+						</code>
+					</pre>
+				</section>
+				<section>
+					<h1>Using Docker Compose</h1>
+					<ul>
+						<li>Configure yml file</li>
+						<li>Up containers! <code style="padding: 0.35em 0; color: #f54e45; font-size: 80%"" class="hljs" data-trim>docker-compose up -d</code></li>
+						<li>Run <code style="padding: 0.35em 0; color: #f54e45; font-size: 80%" class="hljs" data-trim>docker-compose exec container_name drush status</code></li>
+						<li>Stop <code style="padding: 0.35em 0; color: #f54e45; font-size: 80%"" class="hljs" data-trim>docker-compose stop</code></li>
+						<li>Destroy <code style="padding: 0.35em 0; color: #f54e45; font-size: 80%"" class="hljs" data-trim>docker-compose destroy</code></li>
+					</ul>
+				</section>
+				<section>
+					<h1>Demo</h1>
+					<ul>
+						<li>Repo: <em style="color: #f54e45;"><a href="http://github.com/mccrodp/drupal-docker-compose">github.com/mccrodp/drupal-docker-compose</a></em></li>
+						<li>Config walkthrough</li>
+						<li>Branches</li>
+						<li>Containers</li>
+						<li>Demo: Start, Debug, Stop</li>
+					</ul>
+					<aside class="notes">
+						<ul>
+							<li>nginx & apache</li>
+							<li>web (+ nginx), mysql, solr</li>
+						</ul>
+					</aside>
+				</section>
+				<section data-background="#f54e45" data-background-transition="zoom">
+					<h1>Conclusion</h1>
+					<ul>
+						<li>Docker is great</li>
+						<li>Try it out</li>
+						<li>Open any issues on the GitHub repo</li>
+					</ul>
+				</section>
+				<section>
+					<h1>Questions?</h1>
+					<em>Ask me!</em>
+				</section>
+				<section data-background="images/last-slide-view.png">
+					<h1>Contact Details</h1>
+					<ul>
+						<li>Symfony Devs? Work with X-Team!</li>
+						<li>GitHub: <span style="color: #f54e45;">mccrodp</span></li>
+						<li>Drupal.org: <span style="color: #f54e45;">mccrodp</span></li>
+						<li>Twitter: <span style="color: #f54e45;">@mccrodp</span></li>
+						<li>Linkedin: <a href="http://linkedin.com/in/paulmccrodden">linkedin.com/in/paulmccrodden</a></li>
+					</ul>
+				</section>
 			</div>
 		</div>
 
